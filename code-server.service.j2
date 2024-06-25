@@ -1,13 +1,12 @@
-server {
-    listen 80;
-    listen [::]:80;
+[Unit]
+Description=code-server
+After=nginx.service
 
-    server_name {{codeserver_domain}} {{ansible_host}};
+[Service]
+Type=simple
+Environment=PASSWORD={{codeserver_password}}
+ExecStart=/usr/bin/code-server --bind-addr 127.0.0.1:8080 --user-data-dir /var/lib/code-server --auth password
+Restart=always
 
-    location / {
-        proxy_pass http://127.0.0.1:8080/;
-        proxy_set_header Upgrade $http_upgrade;
-        proxy_set_header Connection upgrade;
-        proxy_set_header Accept-Encoding gzip;
-    }
-}
+[Install]
+WantedBy=multi-user.target
